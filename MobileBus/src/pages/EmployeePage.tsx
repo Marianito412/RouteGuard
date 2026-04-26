@@ -11,7 +11,7 @@ const myItems: NavBarItem[] = [
     { id: "incidentReport", label: "Incident Report", icon: <StudentIcon />, component: <IncidentReport/> },
 ];
 
-function AppShellBase(){
+function EmployeePage(){
     const [opened, { toggle }] = useDisclosure();
     let [mainComp, setMainComp] = useState(myItems[0].component);
     
@@ -46,4 +46,4 @@ function AppShellBase(){
     );
 }
 
-export default AppShellBase
+export default EmployeePage

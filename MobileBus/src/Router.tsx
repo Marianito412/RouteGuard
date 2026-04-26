@@ -1,13 +1,18 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import AppShellBase from "./pages/AppShellBase.tsx";
+import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import EmployeePage from "./pages/EmployeePage.tsx";
+import ParentPage from "./pages/ParentPage.tsx";
 
 const router = createBrowserRouter([
   {
-    path: '',
-    element: <AppShellBase/>
+    path: '/Employee',
+    element: <EmployeePage/>
+  },
+  {
+    path: '/Parent',
+    element: <ParentPage/>
   }
 ]);
 
 export function Router() {
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router}/>;
 }
