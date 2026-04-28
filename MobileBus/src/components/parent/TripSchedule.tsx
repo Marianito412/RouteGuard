@@ -47,8 +47,7 @@ function TripSchedule(){
                 students.map((student) => {
                     return (
                         <Tabs.Panel value={student} key={student}>
-                            <ScheduleCards>
-                            </ScheduleCards>
+                            <ScheduleCards/>
                         </Tabs.Panel>    
                     )
                 })
