@@ -1,6 +1,5 @@
 import {Button, Card, NativeSelect, Space, Stack, Textarea, TextInput, Title} from "@mantine/core";
 
-
 function IncidentReport() {
     return (
         <>
