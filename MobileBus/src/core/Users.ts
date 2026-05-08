@@ -1,6 +1,6 @@
 import {Route, Trip} from "./Trips.ts"
 
-class User {
+export class User {
     userName: string;
     password: string;
 
@@ -24,7 +24,7 @@ export class Student{
     }
 }
 
-class StudentStakeHolder extends User {
+export class StudentStakeHolder extends User {
     students: Student[];
     
     constructor(userName: string, password: string, students: Student[]) {
