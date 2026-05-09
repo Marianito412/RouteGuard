@@ -25,17 +25,27 @@ export class Incident {
 }
 
 export class Trip {
-    route: Route;
-    students: {student: Student, status: "Absent"|"Present"|"NotAttending"}[];
+    route: Route | null;
+    students: {student: Student, status: "Absent"|"Present"|"NotAttending", stop: string|null}[];
     incidents: Incident[];
     date: string;
     time: string;
+    currentStop: number;
     
-    constructor(route: Route, date: string, time: string) {
+    constructor(route: Route | null = null, date: string = "", time: string = "") {
         this.route = route;
         this.incidents = [];
         this.students = [];
         this.date = date;
         this.time = time;
+        this.currentStop = 0
+    }
+    
+    addStudent(student: Student){
+        this.students.push({student: student, status: "Absent", stop: null});
+    }
+    
+    removeStudent(student: Student){
+        this.students = this.students.filter(u => u.student === student);
     }
 }

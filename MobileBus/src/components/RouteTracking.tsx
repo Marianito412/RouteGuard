@@ -1,4 +1,4 @@
-import {Avatar, Box, Card, Group, Scroller, SegmentedControl, Space, Stack, Stepper, Text, Title} from "@mantine/core";
+import {Avatar, Box, Card, Group, SegmentedControl, Space, Stack, Stepper, Text, Title} from "@mantine/core";
 import {BusIcon } from "@phosphor-icons/react";
 import {useState} from "react";
 

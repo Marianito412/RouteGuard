@@ -1,4 +1,5 @@
 import {Student, Employee, ServiceProvider, User, StudentStakeHolder} from "./Users.ts"
+import {Trip} from "./Trips.ts";
 
 class Application {
     
@@ -16,6 +17,27 @@ class Application {
         this.serviceProviders = []
         this.studentStakeholders = []
         this.user = null
+    }
+    
+    getTripEmployees(trp: Trip): Employee[]{
+        return this.employees.filter(employee => {
+            return employee.trips.findIndex((tp) => {
+                return tp.date == trp.date && tp.time == trp.time;
+            }) != -1
+        });
+    }
+    
+    findTrips(st: Student){
+        let trps: Trip[] = []
+        for (let serviceProvider of this.serviceProviders) {
+            for (let trip of serviceProvider.trips) {
+                let found = trip.students.findIndex(student => {return st.name == student.student.name})
+                if (found != -1) {
+                    trps.push(trip)
+                }
+            }
+        }
+        return trps
     }
     
     login(userName: string, password: string, userType: "ServiceProvider"|"Employee"|"StakeHolder"): boolean{
@@ -43,8 +65,7 @@ class Application {
         return true;
     }
     
-    saveApp(){
-        //Save instance of the app without session data
+    saveApp(): void{
         const userCopy: User | null = this.user
         this.user = null
         localStorage.setItem('app', JSON.stringify(this));
@@ -52,11 +73,24 @@ class Application {
     }
     
     static loadApp(): Application{
-        const savedUser = localStorage.getItem('app');
+        const savedApp = localStorage.getItem('app');
 
-        if (savedUser) {
-            const newApp: Application = JSON.parse(savedUser);
-            return newApp;
+        if (savedApp) {
+            const parsed = JSON.parse(savedApp);
+            const app = Object.assign(new Application(), parsed);
+
+            // Revive nested class instances
+            app.students = parsed.students.map((s: any) => Object.assign(new Student(), s));
+            app.employees = parsed.employees.map((e: any) => Object.assign(new Employee(), e));
+            
+            app.serviceProviders = parsed.serviceProviders.map((sp: any) => {
+                let serviceProvider: ServiceProvider = Object.assign(new ServiceProvider(), sp)
+                serviceProvider.trips = sp.trips.map((t: any) => Object.assign(new Trip(), t))
+                return serviceProvider
+            });
+            
+            app.studentStakeholders = parsed.studentStakeholders.map((sp: any) => Object.assign(new StudentStakeHolder(), sp));
+            return app;
         }
         return new Application();
     }
