@@ -17,9 +17,8 @@ function IncidentReport() {
     //console.log(App.employees[0]);
     
     const handleSubmit = () => {
-        const formData = { title, description, severity };
-        App.addTripIncident(trp, new Incident(title, description, severity))
-        console.log(formData); // replace with your handler
+        if (!selectedTrip) return;
+        App.addTripIncident(selectedTrip, new Incident(title, description, severity));
     };
     
     return (
