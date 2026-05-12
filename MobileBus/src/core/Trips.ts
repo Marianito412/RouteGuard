@@ -32,13 +32,13 @@ export class Trip {
     time: string;
     currentStop: number;
     
-    constructor(route: Route | null = null, date: string = "", time: string = "") {
+    constructor(route: Route | null = null, date: string = "", time: string = "", currentStop: number = 0) {
         this.route = route;
         this.incidents = [];
         this.students = [];
         this.date = date;
         this.time = time;
-        this.currentStop = 0
+        this.currentStop = currentStop
     }
     
     addStudent(student: Student){

@@ -9,11 +9,13 @@ function ScheduleCards({student}: {student: Student}){
 
     const tripChanged = (trip: Trip) => (newState: string) => {
         if (newState == "Asiste") {
-            trip.addStudent(student);
+            App.addTripStudent(trip, student)
+            //trip.addStudent(student);
         }
         
         if (newState == "No Asiste") {
-            trip.removeStudent(student);
+            App.removeTripStudent(trip, student)
+            //trip.removeStudent(student);
         }
         
         App.saveApp()
@@ -29,7 +31,7 @@ function ScheduleCards({student}: {student: Student}){
         return isGoing ? "Asiste" : "No Asiste";
     }
     
-    const test = App.serviceProviders[0].trips.map((trip, idx)=>{
+    const test = App.getAllTrips().map((trip, idx)=>{
         return (
             <Card key={idx}>
                 <Title>{trip.route?.name + " @ " + trip.date+trip.time}</Title>

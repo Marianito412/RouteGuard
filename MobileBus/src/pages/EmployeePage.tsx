@@ -3,11 +3,11 @@ import {useDisclosure} from "@mantine/hooks";
 import {AppShell, Burger, Group} from "@mantine/core";
 import {HouseIcon, StudentIcon} from "@phosphor-icons/react"
 import {DynamicNavBar, type NavBarItem} from "../components/DynamicNavBar.tsx";
-import {RoutTracking} from "../components/RouteTracking.tsx";
+import {RouteTracking} from "../components/RouteTracking.tsx";
 import IncidentReport from "../components/IncidentReport.tsx";
 
 const myItems: NavBarItem[] = [
-    { id: "home", label: "Home", icon: <HouseIcon/>, component: <RoutTracking/> },
+    { id: "home", label: "Route Sheet", icon: <HouseIcon/>, component: <RouteTracking/> },
     { id: "incidentReport", label: "Incident Report", icon: <StudentIcon />, component: <IncidentReport/> },
 ];
 
@@ -28,7 +28,7 @@ function EmployeePage(){
             <AppShell.Header>
                 <Group h="100%" px="md">
                     <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-                    Header
+                    RouteGuard - Employee
                 </Group>
             </AppShell.Header>
 

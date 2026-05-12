@@ -1,5 +1,5 @@
 import {Student, Employee, ServiceProvider, User, StudentStakeHolder} from "./Users.ts"
-import {Trip} from "./Trips.ts";
+import {Incident, Trip} from "./Trips.ts";
 
 class Application {
     
@@ -25,6 +25,35 @@ class Application {
                 return tp.date == trp.date && tp.time == trp.time;
             }) != -1
         });
+    }
+    
+    addTripStudent(trip: Trip, student: Student){
+        trip.students.push({student: student, status: "Absent", stop: null});
+    }
+
+    removeTripStudent(trip: Trip, student: Student){
+        trip.students = trip.students.filter(u => u.student.name == student.name);
+    }
+    
+    addTripIncident(trip: Trip, incident: Incident){
+        console.log(incident);
+        trip.incidents.push(incident);
+        this.saveApp()
+    }
+    
+    setTripStop(trip: Trip, stop: number){
+        trip.currentStop = stop;
+        this.saveApp()
+    }
+    
+    getAllTrips(): Trip[]{
+        let allTrips: Trip[] = [];
+        for (let serviceProvider of this.serviceProviders) {
+            for (let trip of serviceProvider.trips) {
+                allTrips.push(trip);
+            }
+        }
+        return allTrips;
     }
     
     findTrips(st: Student){
@@ -82,12 +111,14 @@ class Application {
             // Revive nested class instances
             app.students = parsed.students.map((s: any) => Object.assign(new Student(), s));
             app.employees = parsed.employees.map((e: any) => Object.assign(new Employee(), e));
-            
+            app.serviceProviders = parsed.serviceProviders.map((e: any) => Object.assign(new ServiceProvider(), e));
+            /*
             app.serviceProviders = parsed.serviceProviders.map((sp: any) => {
                 let serviceProvider: ServiceProvider = Object.assign(new ServiceProvider(), sp)
                 serviceProvider.trips = sp.trips.map((t: any) => Object.assign(new Trip(), t))
                 return serviceProvider
             });
+            */
             
             app.studentStakeholders = parsed.studentStakeholders.map((sp: any) => Object.assign(new StudentStakeHolder(), sp));
             return app;

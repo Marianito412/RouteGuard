@@ -33,32 +33,32 @@ const incidents: Incident[] = [
 const tripA = new Trip(routeA, "2024-11-01", "07:30");
 tripA.students = [
     { student: students[0], status: "Present", stop: null},
-    { student: students[1], status: "Absent", stop: null },
+    { student: students[5], status: "Absent", stop: null },
     { student: students[2], status: "Present", stop: null },
 ];
 tripA.incidents = [incidents[0], incidents[3]];
 
-const tripA1 = new Trip(routeA, "2024-11-02", "07:30");
-const tripA2 = new Trip(routeA, "2024-11-03", "07:30");
-const tripA3 = new Trip(routeA, "2024-11-04", "07:30");
+//const tripA1 = new Trip(routeA, "2024-11-02", "07:30");
+//const tripA2 = new Trip(routeA, "2024-11-03", "07:30");
+//const tripA3 = new Trip(routeA, "2024-11-04", "07:30");
 
 const tripB = new Trip(routeB, "2024-11-01", "14:00");
 tripB.students = [
     { student: students[3], status: "Present", stop: null },
     { student: students[4], status: "NotAttending", stop: null },
-    { student: students[5], status: "Present", stop: null },
+    { student: students[1], status: "Present", stop: null },
 ];
 tripB.incidents = [incidents[1], incidents[2]];
 
 // --- ServiceProviders ---
 const serviceProviders: ServiceProvider[] = [
-    new ServiceProvider("provider_north", "svcpass1", [routeA], [tripA, tripA1, tripA2, tripA3]),
+    new ServiceProvider("provider_north", "svcpass1", [routeA], [tripA]),
     new ServiceProvider("provider_south", "svcpass2", [routeB], [tripB]),
 ];
 
 // --- Employees ---
 const employees: Employee[] = [
-    new Employee("driver_mike", "drvpass1", [tripA]),
+    new Employee("driver_mike", "drvpass1", [tripA, tripB]),
     new Employee("driver_sara", "drvpass2", [tripB]),
 ];
 
