@@ -75,10 +75,15 @@ function TripStatus({trp, st}: {trp: Trip, st: Student}){
     if (info?.status == "Absent") {state = 0}
     if (info?.status == "Present") {state = 1}
     
-    if (trp.currentStop >= 0) {state = 2}
+    if (trp.currentStop >= 0) {
+        if (trp.currentStop > 0 && state === 0){
+            return (<Title order={3}>{st.name} no se ha presentado a su transporte</Title>);
+        }
+        state = 2
+    }
     
     if (trp.route){
-        let idx = trp.route.stops.findIndex((stp) => {return stp == info?.stop})
+        let idx = trp.route.stops.findIndex((stp) => {return stp === info?.stop})
         
         if (idx >= trp.currentStop){
             state = 3
@@ -166,7 +171,7 @@ function RouteTracker(){
             {
                 students.map((std) => {
                     const myTrp = App.findTrips(std)[0]
-                    
+                    console.log(myTrp.incidents)
                     return (myTrp != undefined ? 
                         <Tabs.Panel value={std.name} key={std.name}>
                         <Stack>

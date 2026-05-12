@@ -4,11 +4,10 @@ import {AppShell, Burger, Group} from "@mantine/core";
 import {HouseIcon, StudentIcon} from "@phosphor-icons/react"
 import {DynamicNavBar, type NavBarItem} from "../components/DynamicNavBar.tsx";
 import {RouteTracking} from "../components/RouteTracking.tsx";
-import IncidentReport from "../components/IncidentReport.tsx";
 
 const myItems: NavBarItem[] = [
     { id: "home", label: "Route Sheet", icon: <HouseIcon/>, component: <RouteTracking/> },
-    { id: "incidentReport", label: "Incident Report", icon: <StudentIcon />, component: <IncidentReport/> },
+    /*{ id: "incidentReport", label: "Incident Report", icon: <StudentIcon />, component: <IncidentReport/> },*/
 ];
 
 function EmployeePage(){

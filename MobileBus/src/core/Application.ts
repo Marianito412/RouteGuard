@@ -36,9 +36,14 @@ class Application {
     }
     
     addTripIncident(trip: Trip, incident: Incident){
-        console.log(incident);
-        trip.incidents.push(incident);
-        this.saveApp()
+        for (let employee of this.employees) {
+            const found = employee.trips.find(t => t.date === trip.date && t.time === trip.time && t.route.name === trip.route.name);
+            if (found) {
+                found.incidents.push(incident);
+                this.saveApp();
+                return;
+            }
+        }
     }
     
     setTripStop(trip: Trip, stop: number){
@@ -111,18 +116,18 @@ class Application {
             // Revive nested class instances
             app.students = parsed.students.map((s: any) => Object.assign(new Student(), s));
             app.employees = parsed.employees.map((e: any) => Object.assign(new Employee(), e));
-            app.serviceProviders = parsed.serviceProviders.map((e: any) => Object.assign(new ServiceProvider(), e));
-            /*
+            //app.serviceProviders = parsed.serviceProviders.map((e: any) => Object.assign(new ServiceProvider(), e));
+            
             app.serviceProviders = parsed.serviceProviders.map((sp: any) => {
                 let serviceProvider: ServiceProvider = Object.assign(new ServiceProvider(), sp)
                 serviceProvider.trips = sp.trips.map((t: any) => Object.assign(new Trip(), t))
                 return serviceProvider
             });
-            */
             
             app.studentStakeholders = parsed.studentStakeholders.map((sp: any) => Object.assign(new StudentStakeHolder(), sp));
             return app;
         }
+        console.log("WE fukt")
         return new Application();
     }
 }

@@ -4,6 +4,7 @@ import {useState} from "react";
 import {App} from "../core/Application.ts";
 import type {Trip} from "../core/Trips.ts";
 import type {Student} from "../core/Users.ts";
+import IncidentReport from "./IncidentReport.tsx";
 
 export type RouteStop = {
     stopName: string;
@@ -20,8 +21,6 @@ const route: RouteStop[] = [
 */
 
 function StudentCard({std}: {std: {student: Student, status: string, stop: string | null}}){
-    
-    
     return (
         <Card styles={{root: {flexGrow: 1} }}>
             <Group wrap="nowrap">
@@ -40,7 +39,7 @@ function StudentCard({std}: {std: {student: Student, status: string, stop: strin
 }
 
 function RouteView({trp} : {trp: Trip}) {
-    console.log(trp.currentStop)
+    //console.log(trp.currentStop)
     const [active, setActive] = useState(trp.currentStop);
     const stepComps = trp.route?.stops.map(() => {
         return (
@@ -77,12 +76,18 @@ function RouteView({trp} : {trp: Trip}) {
                     })
                 }
             </Stack>
+            <Space h="md"/>
+            <Title order={2}>Reportar incidente</Title>
+            <Space h="sm" />
+            <IncidentReport trp={trp}/>
+            
         </Tabs.Panel>
     )
 }
 
 export function RouteTracking() {
     let trps: Trip[] = App.employees[0].trips;
+    console.log(trps);
     
     return (
         <>

@@ -3,25 +3,30 @@ import {App} from "../core/Application.ts";
 import {Incident, type Trip} from "../core/Trips.ts";
 import {useState} from "react";
 
-function IncidentReport() {
+function IncidentReport({trp}: {trp: Trip}) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [severity, setSeverity] = useState('Low');
 
-    let trp = App.employees[0].trips[0]
-    
-    console.log(App.employees[0]);
+    /*
+    let mytrp: Trip;
+    for (let employee of App.employees) {
+        let test = employee.trips.find((thistrip) => {return thistrip===trp}); 
+        if (test != undefined){
+            mytrp = test;
+        }
+    }
+    */
+    //console.log(App.employees[0]);
     
     const handleSubmit = () => {
-        const formData = { title, description, severity };
+        //const formData = { title, description, severity };
         App.addTripIncident(trp, new Incident(title, description, severity))
-        console.log(formData); // replace with your handler
+        //console.log(formData); // replace with your handler
     };
     
     return (
         <>
-            <Title>Incident Report</Title>
-            <Space h="md" />
             <Card>
                 <Stack>
                     <TextInput label="Título" placeholder="Título" onChange={(e) => setTitle(e.target.value)} />
