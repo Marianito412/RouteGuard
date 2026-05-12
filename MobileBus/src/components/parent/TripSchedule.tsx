@@ -1,4 +1,4 @@
-import {Button, Card, SegmentedControl, Space, Stack, Tabs, Title} from "@mantine/core";
+import {Button, Card, SegmentedControl, Space, Stack, Tabs, Text, Title} from "@mantine/core";
 import {App} from "../../core/Application.ts"
 import {useState} from "react";
 import type {Trip} from "../../core/Trips.ts";
@@ -34,7 +34,8 @@ function ScheduleCards({student}: {student: Student}){
     const test = App.getAllTrips().map((trip, idx)=>{
         return (
             <Card key={idx}>
-                <Title>{trip.route?.name + " @ " + trip.date+trip.time}</Title>
+                <Title>{trip.route?.name}</Title>
+                <Text c="dimmed" size="sm">{trip.date +" "+ trip.time}</Text>
                 <SegmentedControl fullWidth defaultValue={getTripState(trip)} data={['Asiste', 'No Asiste']} onChange={tripChanged(trip)}/>
             </Card>
         )

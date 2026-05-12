@@ -68,41 +68,61 @@ function TripPersonnel({trp}: {trp: Trip}) {
     )
 }
 
-function TripStatus({trp, st}: {trp: Trip, st: Student}){
-    const info = trp.students.find((s) => {return s.student.name == st.name})
-    let state: number = 0
-    
-    if (info?.status == "Absent") {state = 0}
-    if (info?.status == "Present") {state = 1}
-    
-    if (trp.currentStop >= 0) {state = 2}
-    
-    if (trp.route){
-        let idx = trp.route.stops.findIndex((stp) => {return stp == info?.stop})
-        
-        if (idx >= trp.currentStop){
-            state = 3
+function TripStatus({trp, st}: { trp: Trip, st: Student }) {
+    const info = trp.students.find((s) => {
+        return s.student.name == st.name
+    })
+    const missedBus = App.hasStudentMissedBus(trp, st);
+
+    let state: number = 0;
+    if (info?.status === "Present") {
+        state = 1;
+    }
+    if (trp.currentStop > 0) {
+        state = 2;
+    }
+    if (trp.route) {
+        let idx = trp.route.stops.findIndex((stp) => stp === info?.stop);
+        if (idx >= trp.currentStop) {
+            state = 3;
         }
     }
-    
+
     return (
-        <Timeline active={state} bulletSize={24} lineWidth={2}>
-            <Timeline.Item bullet={<GitBranchIcon size={12} />} title="Esperando">
-                <Text c="dimmed" size="sm">Estamos esperando a que {st.name} llegue al transporte.</Text>
-            </Timeline.Item>
+        <>
+            {missedBus ?
+                <Timeline active={state} bulletSize={24} lineWidth={2} color={missedBus ? "red" : "blue"}>
+                    <Timeline.Item bullet={<GitBranchIcon size={12}/>} title="Ausente">
+                        <Text c="dimmed" size="sm">
+                            {st.name} no abordó el transporte a tiempo.
+                        </Text>
+                    </Timeline.Item>
+                </Timeline>
+                :
+                <Timeline active={state} bulletSize={24} lineWidth={2} color={missedBus ? "red" : "blue"}>
+                    <Timeline.Item bullet={<GitBranchIcon size={12}/>} title="Esperando">
+                        <Text c="dimmed" size="sm">
+                            {missedBus
+                                ? "${st.name} no abordó el transporte a tiempo."
+                                : "Estamos esperando a que ${st.name} llegue al transporte."}
+                        </Text>
+                    </Timeline.Item>
+                    <Timeline.Item bullet={<GitCommitIcon size={12}/>} title="A Bordo">
+                        <Text c="dimmed" size="sm">{st.name} ya está a bordo y está esperando al resto de sus
+                            compañeros.</Text>
+                    </Timeline.Item>
 
-            <Timeline.Item bullet={<GitCommitIcon size={12} />} title="A Bordo">
-                <Text c="dimmed" size="sm">{st.name} ya está a bordo y está esperando al resto de sus compañeros.</Text>
-            </Timeline.Item>
+                    <Timeline.Item bullet={<GitPullRequestIcon size={12}/>} title="En camino">
+                        <Text c="dimmed" size="sm">El transporte ya se encuentra en camino, {st.name} llegará pronto a
+                            su destino.</Text>
+                    </Timeline.Item>
 
-            <Timeline.Item bullet={<GitPullRequestIcon size={12} />} title="En camino">
-                <Text c="dimmed" size="sm">El transporte ya se encuentra en camino, {st.name} llegará pronto a su destino.</Text>
-            </Timeline.Item>
-
-            <Timeline.Item bullet={<ChatCircleDotsIcon size={12} />} title="Ha llegado">
-                <Text c="dimmed" size="sm">{st.name} ha bajado del transporte en su destino.</Text>
-            </Timeline.Item>
-        </Timeline>
+                    <Timeline.Item bullet={<ChatCircleDotsIcon size={12}/>} title="Ha llegado">
+                        <Text c="dimmed" size="sm">{st.name} ha bajado del transporte en su destino.</Text>
+                    </Timeline.Item>
+                </Timeline>
+            }
+        </>
     )
 }
 

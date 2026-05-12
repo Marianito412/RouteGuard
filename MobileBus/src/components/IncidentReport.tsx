@@ -10,7 +10,7 @@ function IncidentReport() {
 
     let trp = App.employees[0].trips[0]
     
-    console.log(App.employees[0]);
+    //console.log(App.employees[0]);
     
     const handleSubmit = () => {
         const formData = { title, description, severity };

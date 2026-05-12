@@ -19,21 +19,30 @@ const route: RouteStop[] = [
 ]
 */
 
-function StudentCard({std}: {std: {student: Student, status: string, stop: string | null}}){
-    
-    
+function StudentCard({trp, std}: {trp: Trip, std: {student: Student, status: string, stop: string | null}}){
+    const statusMap: Record<string, "Absent" | "Present" | "NotAttending"> = {
+        'Presente': 'Present',
+        'Ausente': 'Absent',
+        'No Asiste': 'NotAttending'
+    };
+
     return (
-        <Card styles={{root: {flexGrow: 1} }}>
+        <Card styles={{root: {flexGrow: 1}}}>
             <Group wrap="nowrap">
                 <Avatar radius="xl" size="lg"/>
                 <Box>
                     <Title order={4}>{std.student.name}</Title>
-                    <Text c="dimmed" size="xs" >{std.student.grade} - {std.student.group}</Text>
+                    <Text c="dimmed" size="xs">{std.student.grade} - {std.student.group}</Text>
                 </Box>
             </Group>
             <Space h="sm"/>
             <Group grow wrap="nowrap">
-                <SegmentedControl fullWidth defaultValue="Ausente" data={['Presente', 'Ausente']} />
+                <SegmentedControl
+                    fullWidth
+                    defaultValue={std.status === 'Present' ? 'Presente' : std.status === 'NotAttending' ? 'No Asiste' : 'Ausente'}
+                    data={['Presente', 'Ausente']}
+                    onChange={(value) => App.updateTripStudentStatus(trp, std.student, statusMap[value])}
+                />
             </Group>
         </Card>
     );
@@ -57,7 +66,7 @@ function RouteView({trp} : {trp: Trip}) {
     return (
         <Tabs.Panel value={trp.route?.name || "invalid"} key={trp.route?.name}>
             <Card>
-                <Text c="dimmed">Próxima parada</Text>
+                <Text c="dimmed">Parada actual</Text>
                 <Title order={3}>{trp.route?.stops[active]}</Title>
                 <Space h="md"/>
                 <Stepper active={active} onStepClick={handleNewStop} size="xs">
@@ -72,7 +81,7 @@ function RouteView({trp} : {trp: Trip}) {
                     trp.students.map((student, i) => {
                         student.student
                         return (
-                            <StudentCard key={i} std={student}/>
+                            <StudentCard key={i} trp={trp} std={student}/>
                         );
                     })
                 }

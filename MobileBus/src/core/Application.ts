@@ -26,24 +26,69 @@ class Application {
             }) != -1
         });
     }
-    
-    addTripStudent(trip: Trip, student: Student){
-        trip.students.push({student: student, status: "Absent", stop: null});
+
+    addTripStudent(trip: Trip, student: Student) {
+        const newEntry = { student: student, status: "Absent", stop: null };
+
+        // Add to serviceProviders
+        for (const sp of this.serviceProviders) {
+            const found = sp.trips.find(t => t.date === trip.date && t.time === trip.time && t.route?.name === trip.route?.name);
+            if (found) {
+                found.students.push(newEntry);
+            }
+        }
+
+        // Add to employees
+        for (const emp of this.employees) {
+            const found = emp.trips.find(t => t.date === trip.date && t.time === trip.time && t.route?.name === trip.route?.name);
+            if (found) {
+                found.students.push(newEntry);
+            }
+        }
+
+        this.saveApp();
     }
 
-    removeTripStudent(trip: Trip, student: Student){
-        trip.students = trip.students.filter(u => u.student.name == student.name);
+    removeTripStudent(trip: Trip, student: Student) {
+        // Remove from serviceProviders
+        for (const sp of this.serviceProviders) {
+            const found = sp.trips.find(t => t.date === trip.date && t.time === trip.time && t.route?.name === trip.route?.name);
+            if (found) {
+                found.students = found.students.filter(s => s.student.name !== student.name);
+            }
+        }
+
+        // Remove from employees
+        for (const emp of this.employees) {
+            const found = emp.trips.find(t => t.date === trip.date && t.time === trip.time && t.route?.name === trip.route?.name);
+            if (found) {
+                found.students = found.students.filter(s => s.student.name !== student.name);
+            }
+        }
+
+        this.saveApp();
     }
     
     addTripIncident(trip: Trip, incident: Incident){
-        console.log(incident);
-        trip.incidents.push(incident);
-        this.saveApp()
+        for (const sp of this.serviceProviders) {
+            const found = sp.trips.find(t => t.date === trip.date && t.time === trip.time && t.route?.name === trip.route?.name);
+            if (found) {
+                found.incidents.push(incident);
+                this.saveApp();
+                return;
+            }
+        }
     }
     
     setTripStop(trip: Trip, stop: number){
-        trip.currentStop = stop;
-        this.saveApp()
+        for (const sp of this.serviceProviders) {
+            const found = sp.trips.find(t => t.date === trip.date && t.time === trip.time && t.route?.name === trip.route?.name);
+            if (found) {
+                found.currentStop = stop;
+                this.saveApp();
+                return;
+            }
+        }
     }
     
     getAllTrips(): Trip[]{
@@ -67,6 +112,32 @@ class Application {
             }
         }
         return trps
+    }
+
+    updateTripStudentStatus(trip: Trip, student: Student, status: "Absent" | "Present" | "NotAttending") {
+        for (const sp of this.serviceProviders) {
+            const found = sp.trips.find(t => t.date === trip.date && t.time === trip.time && t.route?.name === trip.route?.name);
+            if (found) {
+                const entry = found.students.find(s => s.student.name === student.name);
+                if (entry) entry.status = status;
+            }
+        }
+
+        for (const emp of this.employees) {
+            const found = emp.trips.find(t => t.date === trip.date && t.time === trip.time && t.route?.name === trip.route?.name);
+            if (found) {
+                const entry = found.students.find(s => s.student.name === student.name);
+                if (entry) entry.status = status;
+            }
+        }
+
+        this.saveApp();
+    }
+
+    hasStudentMissedBus(trip: Trip, student: Student): boolean {
+        const entry = trip.students.find(s => s.student.name === student.name);
+        if (!entry) return false;
+        return trip.currentStop > 0 && entry.status === "Absent";
     }
     
     login(userName: string, password: string, userType: "ServiceProvider"|"Employee"|"StakeHolder"): boolean{
@@ -100,27 +171,43 @@ class Application {
         localStorage.setItem('app', JSON.stringify(this));
         this.user = userCopy;
     }
-    
-    static loadApp(): Application{
+
+    static loadApp(): Application {
         const savedApp = localStorage.getItem('app');
 
         if (savedApp) {
             const parsed = JSON.parse(savedApp);
             const app = Object.assign(new Application(), parsed);
 
-            // Revive nested class instances
             app.students = parsed.students.map((s: any) => Object.assign(new Student(), s));
-            app.employees = parsed.employees.map((e: any) => Object.assign(new Employee(), e));
-            app.serviceProviders = parsed.serviceProviders.map((e: any) => Object.assign(new ServiceProvider(), e));
-            /*
-            app.serviceProviders = parsed.serviceProviders.map((sp: any) => {
-                let serviceProvider: ServiceProvider = Object.assign(new ServiceProvider(), sp)
-                serviceProvider.trips = sp.trips.map((t: any) => Object.assign(new Trip(), t))
-                return serviceProvider
+            app.employees = parsed.employees.map((e: any) => {
+                const emp = Object.assign(new Employee(), e);
+                emp.trips = e.trips.map((t: any) => {
+                    const trip = Object.assign(new Trip(), t);
+                    trip.incidents = t.incidents.map((i: any) => Object.assign(new Incident(), i));
+                    trip.students = t.students.map((s: any) => ({
+                        ...s,
+                        student: Object.assign(new Student(), s.student)
+                    }));
+                    return trip;
+                });
+                return emp;
             });
-            */
-            
+            app.serviceProviders = parsed.serviceProviders.map((sp: any) => {
+                const serviceProvider = Object.assign(new ServiceProvider(), sp);
+                serviceProvider.trips = sp.trips.map((t: any) => {
+                    const trip = Object.assign(new Trip(), t);
+                    trip.incidents = t.incidents.map((i: any) => Object.assign(new Incident(), i));
+                    trip.students = t.students.map((s: any) => ({
+                        ...s,
+                        student: Object.assign(new Student(), s.student)
+                    }));
+                    return trip;
+                });
+                return serviceProvider;
+            });
             app.studentStakeholders = parsed.studentStakeholders.map((sp: any) => Object.assign(new StudentStakeHolder(), sp));
+
             return app;
         }
         return new Application();
