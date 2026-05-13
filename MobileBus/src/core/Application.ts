@@ -28,7 +28,7 @@ class Application {
     }
 
     addTripStudent(trip: Trip, student: Student) {
-        const newEntry = { student: student, status: "Absent", stop: null };
+        const newEntry = { student: student, status: "Absent", stop: 1 };
 
         // Add to serviceProviders
         for (const sp of this.serviceProviders) {

@@ -101,10 +101,8 @@ function TripStatus({trp, st}: { trp: Trip, st: Student }) {
                 :
                 <Timeline active={state} bulletSize={24} lineWidth={2} color={missedBus ? "red" : "blue"}>
                     <Timeline.Item bullet={<GitBranchIcon size={12}/>} title="Esperando">
-                        <Text c="dimmed" size="sm">
-                            {missedBus
-                                ? "${st.name} no abordó el transporte a tiempo."
-                                : "Estamos esperando a que ${st.name} llegue al transporte."}
+                        <Text c="dimmed" size="sm"> 
+                            Estamos esperando a que {st.name} llegue al transporte.
                         </Text>
                     </Timeline.Item>
                     <Timeline.Item bullet={<GitCommitIcon size={12}/>} title="A Bordo">
@@ -194,7 +192,7 @@ function RouteTracker(){
                             <Title order={2}>Equipo de Transporte</Title>
                             <TripPersonnel trp={myTrp}/>
                             <Title order={2}>Estado de viaje</Title>
-                            <TripStatus trp={myTrp} st={st.students[0]}/>
+                            <TripStatus trp={myTrp} st={std}/>
                             <Title order={2}>Incidentes</Title>
                             {myTrp.incidents.map((incident: Incident, idx) => {
                                 return <IncidentCard key={idx} incident={incident}/>

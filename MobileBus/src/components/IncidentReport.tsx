@@ -9,8 +9,6 @@ function IncidentReport() {
     const [severity, setSeverity] = useState('Low');
     const [selectedTrip, setSelectedTrip] = useState<Trip | null>(App.getAllTrips()[0] ?? null);
 
-    let trp = App.employees[0].trips[0]
-
     const trips = App.getAllTrips();
     const tripOptions = trips.map(t => t.route?.name + " - " + t.date);
     
